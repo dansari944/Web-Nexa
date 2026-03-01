@@ -2,6 +2,7 @@
 
 import { signIn } from "next-auth/react";
 import { useState, useEffect } from "react";
+import toast from "react-hot-toast";
 import GoogleIcon from "@/components/GoogleIcon";
 
 export default function LoginPage() {
@@ -25,7 +26,7 @@ export default function LoginPage() {
   }, [timer]);
 
   const resendOtp = async () => {
-    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/resend-otp`, {
+    await fetch(`http://localhost:7000/api/auth/resend-otp`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email }),
@@ -46,42 +47,43 @@ export default function LoginPage() {
   // REGISTER
   const register = async () => {
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      toast.error("Passwords do not match");
       return;
     }
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/signup`, {
+    const res = await fetch(`http://localhost:7000/api/auth/register`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ name, email, password }),
     });
 
     const data = await res.json();
-
     if (data.success) {
       setOtpSent(true);
+    } else {
+      toast.error(data?.msg);
     }
   };
 
   // VERIFY OTP
   const verifyOtp = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_API_URL}/auth/verify-otp`,
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, otp }),
-      },
-    );
+    const res = await fetch(`http://localhost:7000/api/auth/verify-otp`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, otp }),
+    });
 
     const data = await res.json();
-
+debugger
     if (data.success) {
+      debugger
       await signIn("credentials", {
         email,
         password,
         callbackUrl: "/",
       });
+    } else {
+      toast.error(data?.msg);
     }
   };
 
@@ -90,7 +92,7 @@ export default function LoginPage() {
       <div className="text-black bg-white p-8 rounded-xl w-96 space-y-4 shadow-lg">
         {/* GOOGLE LOGIN */}
         <button
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl: "/" })}
           className="w-full flex items-center justify-center gap-3 border rounded-lg py-3 font-semibold hover:bg-gray-50"
         >
           <GoogleIcon size={22} />

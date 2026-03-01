@@ -28,7 +28,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [scrollStage, setScrollStage] = useState(0);
-  const navbarHeight = scrollStage === 0 ? 112 : 80;
+  const navbarHeight = scrollStage === 0 ? 102 : 80;
   const pathname = usePathname();
   const { data: session, status } = useSession();
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function Navbar() {
             : "bg-transparent"
         }`}
         style={{
-          height: scrollStage === 0 ? "112px" : "80px",
+          height: scrollStage === 0 ? "90px" : "80px",
           backgroundColor:
             scrollStage === 0
               ? "rgba(255,255,255,0)"
@@ -88,7 +88,7 @@ export default function Navbar() {
           <div
             className="grid grid-cols-3 items-center transition-all duration-500 ease-out"
             style={{
-              height: scrollStage === 0 ? "112px" : "80px",
+              height: scrollStage === 0 ? "102px" : "80px",
             }}
           >
             {/* LEFT — Phone */}
